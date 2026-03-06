@@ -56,7 +56,16 @@ The main project is the **VVR Rice Official Website**, a modern, responsive plat
 
 ---
 
-## 🚀 Getting Started
+## ⚠️ Important Notice
+
+**This repository is for reference and portfolio purposes only.**
+
+❌ **Cloning, forking, and copying of code is strictly prohibited.**  
+❌ **Unauthorized reproduction or redistribution is not permitted.**
+
+If you are interested in collaborating or need access to the codebase, please contact the development team directly.
+
+---
 
 ### Prerequisites
 - Node.js (v16+)
