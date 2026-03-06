@@ -207,7 +207,7 @@ This repository contains proprietary source code and branding materials for VVR 
 ---
 
 **Last Updated**: March 2026  
-**Maintained By**: Development Team @ VVR Rice (India)
+**Maintained By**: [Nadella Shyamanth](https://github.com/Shyamanth-3)
 
 ---
 
