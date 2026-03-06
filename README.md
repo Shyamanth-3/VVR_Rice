@@ -178,4 +178,4 @@ This repository contains proprietary source code, designs, and branding material
 
 **Repository Status**: ✅ Active  
 **Last Updated**: March 2026  
-**Maintained By**: VVR Rice (India) Development Team
+**Maintained By**: [Nadella Shyamanth](https://github.com/Shyamanth-3)
