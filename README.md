@@ -79,21 +79,6 @@ If you are interested in collaborating or need access to the codebase, please co
 - Node.js (v16+)
 - npm or yarn
 
-### Development Setup
-
-```bash
-# Clone the repository
-git clone git@github.com:Shyamanth-3/VVR_Rice.git
-cd VVR_Rice
-
-# Install dependencies
-npm install
-
-# Start development servers
-npm run dev                    # Frontend on http://localhost:5173
-cd server && npm start         # Backend on http://localhost:3001
-```
-
 ---
 
 ## 📋 Key Sections
