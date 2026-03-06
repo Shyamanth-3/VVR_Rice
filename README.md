@@ -32,7 +32,6 @@ VVR_Rice/
 ├── package.json          # Frontend dependencies
 ├── vite.config.js        # Vite configuration
 ├── tailwind.config.js    # Tailwind CSS configuration
-├── Website-README.md     # Detailed website documentation
 └── Assets/               # Company branding & media (excluded from git)
 ```
 
@@ -48,8 +47,7 @@ The main project is the **VVR Rice Official Website**, a modern, responsive plat
 - **Customer Engagement**: Contact form and inquiry management
 
 ### Quick Links
-- **Website Documentation**: [`Website-README.md`](Website-README.md)
-- **Setup Guide**: [Setup Instructions](#-quick-start)
+- **Setup Guide**: [Setup Instructions](#development-setup)
 
 ---
 
@@ -96,8 +94,6 @@ npm run dev                    # Frontend on http://localhost:5173
 cd server && npm start         # Backend on http://localhost:3001
 ```
 
-For detailed instructions, see [`Website-README.md`](Website-README.md#-quick-start).
-
 ---
 
 ## 📋 Key Sections
@@ -126,7 +122,7 @@ This repository includes:
 - Private company information
 - Third-party API keys
 
-See [`Website-README.md#-security--privacy`](Website-README.md#-security--privacy) for details.
+See the section above and `.gitignore` for complete protection rules.
 
 ---
 
