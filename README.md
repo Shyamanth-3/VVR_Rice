@@ -15,13 +15,24 @@ This repository contains the source code and assets for the **VVR Rice (India)**
 
 ```
 VVR_Rice/
-├── Website/              # Official VVR Rice website (React + Node.js)
-│   ├── src/              # React frontend source code
-│   ├── server/           # Express.js backend API
-│   ├── README.md         # Website-specific documentation
-│   └── package.json      # Dependencies
+├── src/                  # React frontend source code
+│   ├── components/       # Reusable React components
+│   ├── pages/            # Route-based pages
+│   ├── assets/           # Images and media files
+│   ├── hooks/            # Custom React hooks
+│   ├── utils/            # Utility functions
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
+├── server/               # Express.js backend API
+│   ├── server.js
+│   └── package.json
 ├── ETC/                  # Utilities and tools
-│   └── convert.py        # Python conversion utilities
+│   └── convert.py
+├── package.json          # Frontend dependencies
+├── vite.config.js        # Vite configuration
+├── tailwind.config.js    # Tailwind CSS configuration
+├── Website-README.md     # Detailed website documentation
 └── Assets/               # Company branding & media (excluded from git)
 ```
 
@@ -37,9 +48,8 @@ The main project is the **VVR Rice Official Website**, a modern, responsive plat
 - **Customer Engagement**: Contact form and inquiry management
 
 ### Quick Links
-- **Website Directory**: [`Website/`](Website/)
-- **Website Documentation**: [`Website/README.md`](Website/README.md)
-- **Setup Guide**: [Website Setup Instructions](Website/README.md#-quick-start)
+- **Website Documentation**: [`Website-README.md`](Website-README.md)
+- **Setup Guide**: [Setup Instructions](#-quick-start)
 
 ---
 
@@ -78,9 +88,6 @@ If you are interested in collaborating or need access to the codebase, please co
 git clone git@github.com:Shyamanth-3/VVR_Rice.git
 cd VVR_Rice
 
-# Navigate to website directory
-cd Website
-
 # Install dependencies
 npm install
 
@@ -89,7 +96,7 @@ npm run dev                    # Frontend on http://localhost:5173
 cd server && npm start         # Backend on http://localhost:3001
 ```
 
-For detailed instructions, see [`Website/README.md`](Website/README.md#-quick-start).
+For detailed instructions, see [`Website-README.md`](Website-README.md#-quick-start).
 
 ---
 
@@ -119,7 +126,7 @@ This repository includes:
 - Private company information
 - Third-party API keys
 
-See [`Website/README.md#-security--privacy`](Website/README.md#-security--privacy) for details.
+See [`Website-README.md#-security--privacy`](Website-README.md#-security--privacy) for details.
 
 ---
 
@@ -127,7 +134,6 @@ See [`Website/README.md#-security--privacy`](Website/README.md#-security--privac
 
 ### Production Build
 ```bash
-cd Website
 npm run build
 # Creates optimized build in 'dist/' folder
 ```
