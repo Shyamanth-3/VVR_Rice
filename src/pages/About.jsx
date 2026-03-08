@@ -1,7 +1,8 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
 import { Factory, Award, Users, Target, Heart, Leaf, CheckCircle } from 'lucide-react';
 import Layout from '../components/Layout';
+import Counter from '../components/Counter';
 
 const About = () => {
   const timelineEvents = [
@@ -81,20 +82,32 @@ const About = () => {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="relative py-32 bg-gradient-beige overflow-hidden">
-        <div className="absolute inset-0 bg-rice-grain opacity-20"></div>
+      <section className="relative py-32 bg-gray-900 overflow-hidden flex items-center justify-center min-h-[60vh]">
+        <motion.div 
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 15, ease: "easeOut" }}
+          className="absolute inset-0"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1574323347407-e02ceda47de6?auto=format&fit=crop&q=80&w=2070"
+            alt="Paddy Field"
+            className="w-full h-full object-cover opacity-30 mix-blend-overlay"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent"></div>
+        </motion.div>
         
         <div className="container-custom relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center max-w-4xl mx-auto"
+            className="text-center max-w-4xl mx-auto text-white"
           >
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold text-gray-900 mb-6">
-              Our <span className="text-gradient">Heritage</span>
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold mb-6">
+              Our <span className="text-gold-400">Heritage</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 leading-relaxed">
+            <p className="text-xl md:text-2xl text-gray-300 leading-relaxed font-light">
               Six decades of tradition, innovation, and unwavering commitment to 
               delivering the finest quality rice to families across India.
             </p>
@@ -112,16 +125,23 @@ const About = () => {
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <div className="aspect-w-16 aspect-h-12">
-                <img
+              <motion.div 
+                className="aspect-w-16 aspect-h-12 overflow-hidden rounded-2xl shadow-2xl relative group"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+              >
+                <motion.img
+                  whileHover={{ scale: 1.15 }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
                   src="/src/assets/about-heritage.jpg"
                   alt="VVR Rice Heritage"
-                  className="w-full h-96 object-cover rounded-2xl shadow-2xl"
+                  className="w-full h-96 object-cover"
                   onError={(e) => {
-                    e.target.src = '/src/assets/placeholder-heritage.jpg';
+                    e.target.src = 'https://images.unsplash.com/photo-1595981267035-7b04d84b4f1c?auto=format&fit=crop&q=80&w=1000';
                   }}
                 />
-              </div>
+                <div className="absolute inset-0 bg-gold-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              </motion.div>
             </motion.div>
 
             <motion.div
@@ -168,18 +188,27 @@ const About = () => {
                 viewport={{ once: true }}
                 className="flex items-center space-x-8 pt-6"
               >
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-gold-600">60+</div>
-                  <div className="text-sm text-gray-600">Years</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-gold-600">10K+</div>
-                  <div className="text-sm text-gray-600">Families</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-gold-600">100%</div>
-                  <div className="text-sm text-gray-600">Quality</div>
-                </div>
+                <motion.div 
+                  whileHover={{ y: -5, scale: 1.05 }}
+                  className="text-center p-4 rounded-xl bg-beige-50 hover:bg-gold-50 transition-all cursor-default border border-transparent hover:border-gold-200"
+                >
+                  <div className="text-4xl font-bold text-gold-600 font-serif"><Counter from={0} to={60} suffix="+" /></div>
+                  <div className="text-sm text-gray-600 font-medium uppercase tracking-wide mt-1">Years</div>
+                </motion.div>
+                <motion.div 
+                  whileHover={{ y: -5, scale: 1.05 }}
+                  className="text-center p-4 rounded-xl bg-beige-50 hover:bg-gold-50 transition-all cursor-default border border-transparent hover:border-gold-200"
+                >
+                  <div className="text-4xl font-bold text-gold-600 font-serif"><Counter from={0} to={10} suffix="K+" /></div>
+                  <div className="text-sm text-gray-600 font-medium uppercase tracking-wide mt-1">Families</div>
+                </motion.div>
+                <motion.div 
+                  whileHover={{ y: -5, scale: 1.05 }}
+                  className="text-center p-4 rounded-xl bg-beige-50 hover:bg-gold-50 transition-all cursor-default border border-transparent hover:border-gold-200"
+                >
+                  <div className="text-4xl font-bold text-gold-600 font-serif"><Counter from={0} to={100} suffix="%" /></div>
+                  <div className="text-sm text-gray-600 font-medium uppercase tracking-wide mt-1">Quality</div>
+                </motion.div>
               </motion.div>
             </motion.div>
           </div>
@@ -225,17 +254,23 @@ const About = () => {
                   } flex-col`}
                 >
                   <div className={`flex-1 ${index % 2 === 0 ? 'md:text-right md:pr-12' : 'md:text-left md:pl-12'} text-center mb-8 md:mb-0`}>
-                    <div className="card p-8 max-w-md mx-auto md:mx-0">
-                      <div className="text-2xl font-bold text-gold-600 mb-2">{event.year}</div>
-                      <h3 className="text-xl font-semibold text-gray-900 mb-3">{event.title}</h3>
-                      <p className="text-gray-600 leading-relaxed">{event.description}</p>
-                    </div>
+                    <motion.div 
+                      whileHover={{ scale: 1.03, y: -10 }}
+                      className="card p-8 max-w-md mx-auto md:mx-0 shadow-lg hover:shadow-2xl hover:border-gold-200 border border-transparent transition-all duration-300 relative overflow-hidden group"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-gold-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                      <div className="relative z-10">
+                        <div className="text-3xl font-serif font-bold text-gold-600 mb-2 group-hover:text-gold-700 transition-colors">{event.year}</div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-3">{event.title}</h3>
+                        <p className="text-gray-600 leading-relaxed font-medium">{event.description}</p>
+                      </div>
+                    </motion.div>
                   </div>
                   
                   {/* Timeline Node */}
-                  <div className="hidden md:flex w-16 h-16 bg-gold-600 rounded-full items-center justify-center relative z-10 shadow-lg">
-                    <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                      <div className="w-4 h-4 bg-gold-600 rounded-full"></div>
+                  <div className="hidden md:flex w-16 h-16 bg-gold-600 rounded-full items-center justify-center relative z-10 shadow-xl border-4 border-white transition-transform duration-300 hover:scale-125 hover:bg-gold-500">
+                    <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
+                      <div className="w-3 h-3 bg-gold-700 rounded-full animate-pulse"></div>
                     </div>
                   </div>
                   
@@ -310,15 +345,16 @@ const About = () => {
               <motion.div
                 key={index}
                 variants={itemVariants}
-                className="card p-8 text-center hover:bg-white transition-colors duration-300"
+                whileHover={{ y: -10 }}
+                className="card p-8 text-center bg-white hover:bg-gold-50 border border-transparent hover:border-gold-200 transition-colors duration-300 group shadow-md hover:shadow-2xl"
               >
-                <div className="mb-6 flex justify-center">
+                <div className="mb-6 flex justify-center transform group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300">
                   {value.icon}
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-gold-700 transition-colors">
                   {value.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-600 leading-relaxed font-medium">
                   {value.description}
                 </p>
               </motion.div>
@@ -367,16 +403,23 @@ const About = () => {
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <div className="aspect-w-16 aspect-h-12">
-                <img
+              <motion.div 
+                className="aspect-w-16 aspect-h-12 overflow-hidden rounded-2xl shadow-2xl relative group"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.5 }}
+              >
+                <motion.img
+                  whileHover={{ scale: 1.15 }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
                   src="/src/assets/about-achievements.jpg"
                   alt="VVR Rice Achievements"
-                  className="w-full h-96 object-cover rounded-2xl shadow-2xl"
+                  className="w-full h-96 object-cover"
                   onError={(e) => {
-                    e.target.src = '/src/assets/placeholder-achievements.jpg';
+                    e.target.src = 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1000';
                   }}
                 />
-              </div>
+                <div className="absolute inset-0 bg-gold-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              </motion.div>
             </motion.div>
           </div>
         </div>

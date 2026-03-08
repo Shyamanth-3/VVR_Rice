@@ -149,20 +149,32 @@ const Products = () => {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="relative py-32 bg-gradient-beige overflow-hidden">
-        <div className="absolute inset-0 bg-rice-grain opacity-20"></div>
+      <section className="relative py-32 bg-gray-900 overflow-hidden flex items-center justify-center min-h-[50vh]">
+        <motion.div 
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 15, ease: "easeOut" }}
+          className="absolute inset-0"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1586201375761-83865001e8ac?auto=format&fit=crop&q=80&w=2070"
+            alt="Rice processing"
+            className="w-full h-full object-cover opacity-40 mix-blend-overlay"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent"></div>
+        </motion.div>
         
         <div className="container-custom relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center max-w-4xl mx-auto"
+            className="text-center max-w-4xl mx-auto text-white"
           >
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold text-gray-900 mb-6">
-              Our Premium <span className="text-gradient">Rice Collection</span>
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold mb-6">
+              Our Premium <span className="text-gold-400">Collection</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 leading-relaxed">
+            <p className="text-xl md:text-2xl text-gray-300 leading-relaxed font-light">
               From fortified nutrition to traditional varieties, discover our carefully 
               processed rice products that bring health and taste to your table.
             </p>
@@ -170,94 +182,84 @@ const Products = () => {
         </div>
       </section>
 
-      {/* Products Grid */}
+      {/* Products Zigzag Layout */}
       <section className="section-padding bg-white">
         <div className="container-custom">
           <motion.div
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16"
+            viewport={{ once: true, amount: 0.1 }}
+            className="space-y-32"
           >
             {products.map((product, index) => (
               <motion.div
                 key={product.id}
                 id={product.id}
                 variants={itemVariants}
-                className="card overflow-hidden group cursor-pointer"
-                onClick={() => openModal(product)}
+                className={`flex flex-col ${index % 2 === 1 ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-center gap-12 lg:gap-20`}
               >
-                {/* Product Image */}
-                <div className="relative overflow-hidden">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-60 object-cover group-hover:scale-125 transition-transform duration-500"
-                    onError={(e) => {
-                      e.target.src = '/src/assets/placeholder-rice.jpg';
-                    }}
-                  />
-                  {/* Category Badge */}
-                  <div className={`absolute top-4 left-4 ${product.color} text-white px-3 py-1 rounded-full text-xs font-semibold`}>
-                    {product.category}
-                  </div>
-                  {/* Rating Badge */}
-                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full flex items-center space-x-1">
-                    <Star size={14} className="text-gold-400 fill-current" />
-                    <span className="text-xs font-semibold text-gray-700">{product.rating}</span>
+                {/* Product Image Side */}
+                <div className="w-full lg:w-1/2 relative group cursor-pointer" onClick={() => openModal(product)}>
+                  <div className="relative overflow-hidden rounded-3xl shadow-2xl">
+                    <motion.img
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.8, ease: "easeOut" }}
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-[500px] object-cover"
+                      onError={(e) => {
+                        e.target.src = '/src/assets/placeholder-rice.jpg';
+                      }}
+                    />
+                    <div className={`absolute top-6 left-6 ${product.color} text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg`}>
+                      {product.category}
+                    </div>
+                    {/* Learn More Overlay */}
+                    <div className="absolute inset-0 bg-gray-900/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <div className="bg-white text-gray-900 px-8 py-4 rounded-full font-bold flex items-center space-x-2 transform translate-y-8 group-hover:translate-y-0 transition-all duration-300 shadow-xl">
+                        <Info size={20} />
+                        <span>Quick View</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {/* Product Info */}
-                <div className="p-8">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-semibold text-gold-600 bg-gold-100 px-2 py-1 rounded">
+                {/* Product Info Side */}
+                <div className="w-full lg:w-1/2 space-y-8">
+                  <div className="flex items-center space-x-4">
+                    <span className="text-sm font-bold text-gold-600 bg-gold-50 border border-gold-200 px-4 py-1.5 rounded-full uppercase tracking-wider shadow-sm">
                       {product.tagline}
                     </span>
-                    <div className="flex items-center">
-                      {[...Array(5)].map((_, i) => (
-                        <Star 
-                          key={i} 
-                          size={14} 
-                          className={`${
-                            i < Math.floor(product.rating) 
-                              ? 'text-gold-400 fill-current' 
-                              : 'text-gray-300'
-                          }`} 
-                        />
-                      ))}
+                    <div className="flex items-center space-x-1 bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-full shadow-sm">
+                      <Star size={16} className="text-gold-400 fill-current" />
+                      <span className="text-sm font-bold text-gray-700">{product.rating} Rating</span>
                     </div>
                   </div>
                   
-                  <h3 className="text-2xl font-serif font-bold text-gray-900 mb-3">
+                  <h2 className="text-4xl lg:text-5xl font-serif font-bold text-gray-900 leading-tight">
                     {product.name}
-                  </h3>
+                  </h2>
                   
-                  <p className="text-gray-600 mb-6 leading-relaxed">
+                  <p className="text-xl text-gray-600 leading-relaxed font-light">
                     {product.description}
                   </p>
 
-                  {/* Quick Features */}
-                  <div className="space-y-2 mb-6">
-                    {product.features.slice(0, 3).map((feature, idx) => (
-                      <div key={idx} className="flex items-center text-sm text-gray-600">
-                        <div className="w-2 h-2 bg-gold-400 rounded-full mr-3 flex-shrink-0"></div>
-                        {feature}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 py-6 border-y border-gray-100">
+                    {product.features.slice(0, 4).map((feature, idx) => (
+                      <div key={idx} className="flex items-start text-gray-700">
+                        <div className="w-2 h-2 bg-gradient-to-r from-gold-400 to-gold-600 rounded-full mr-3 mt-2.5 flex-shrink-0 shadow-sm"></div>
+                        <span className="font-medium text-lg">{feature}</span>
                       </div>
                     ))}
                   </div>
 
-                  {/* Action Button */}
                   <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openModal(product);
-                    }}
-                    className="w-full btn-primary flex items-center justify-center space-x-2"
+                    onClick={() => openModal(product)}
+                    className="btn-primary text-lg px-8 py-4 flex items-center justify-center space-x-3 hover:scale-105 transition-transform duration-300 shadow-xl w-full sm:w-auto"
                   >
-                    <Info size={18} />
-                    <span>Learn More</span>
+                    <span>Explore Details</span>
+                    <Info size={20} />
                   </button>
                 </div>
               </motion.div>
@@ -281,29 +283,38 @@ const Products = () => {
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <Shield className="w-8 h-8 text-gold-600" />
+              <motion.div 
+                whileHover={{ y: -10, scale: 1.05 }}
+                className="text-center p-8 bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 border border-transparent hover:border-gold-200 group"
+              >
+                <div className="w-20 h-20 bg-gold-50 group-hover:bg-gold-100 transition-colors rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Shield className="w-10 h-10 text-gold-600 group-hover:scale-110 transition-transform" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">Hygiene Standards</h3>
-                <p className="text-gray-600">FSSAI licensed facility with automated processing ensuring maximum hygiene.</p>
-              </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-gold-700 transition-colors">Hygiene Standards</h3>
+                <p className="text-gray-600 font-medium">FSSAI licensed facility with automated processing ensuring maximum hygiene.</p>
+              </motion.div>
               
-              <div className="text-center">
-                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <Award className="w-8 h-8 text-gold-600" />
+              <motion.div 
+                whileHover={{ y: -10, scale: 1.05 }}
+                className="text-center p-8 bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 border border-transparent hover:border-gold-200 group"
+              >
+                <div className="w-20 h-20 bg-gold-50 group-hover:bg-gold-100 transition-colors rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Award className="w-10 h-10 text-gold-600 group-hover:scale-110 transition-transform" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">Quality Control</h3>
-                <p className="text-gray-600">Every batch tested for quality, purity, and nutritional content before packaging.</p>
-              </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-gold-700 transition-colors">Quality Control</h3>
+                <p className="text-gray-600 font-medium">Every batch tested for quality, purity, and nutritional content before packaging.</p>
+              </motion.div>
               
-              <div className="text-center">
-                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <Leaf className="w-8 h-8 text-gold-600" />
+              <motion.div 
+                whileHover={{ y: -10, scale: 1.05 }}
+                className="text-center p-8 bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 border border-transparent hover:border-gold-200 group"
+              >
+                <div className="w-20 h-20 bg-gold-50 group-hover:bg-gold-100 transition-colors rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Leaf className="w-10 h-10 text-gold-600 group-hover:scale-110 transition-transform" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">Natural Processing</h3>
-                <p className="text-gray-600">No artificial preservatives or chemicals, preserving natural nutrition and aroma.</p>
-              </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-gold-700 transition-colors">Natural Processing</h3>
+                <p className="text-gray-600 font-medium">No artificial preservatives or chemicals, preserving natural nutrition and aroma.</p>
+              </motion.div>
             </div>
           </motion.div>
         </div>

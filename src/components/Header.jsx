@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 
 const Header = () => {
@@ -18,106 +18,178 @@ const Header = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      setIsScrolled(window.scrollY > 50);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
+
   return (
-    <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-      isScrolled ? 'bg-white shadow-lg' : 'bg-white/95 backdrop-blur-sm'
-    }`}>
-      <div className="container-custom">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3">
-            <img
+    <motion.header
+      initial={false}
+      animate={{
+        top: isScrolled ? 14 : 0,
+        left: '50%',
+        x: '-50%',
+        width: isScrolled ? 'auto' : '100%',
+        borderRadius: isScrolled ? 9999 : 0,
+        paddingTop: isScrolled ? 0 : 0,
+        paddingBottom: isScrolled ? 0 : 0,
+      }}
+      transition={{
+        type: 'spring',
+        stiffness: 180,
+        damping: 24,
+        mass: 0.6,
+      }}
+      className={`fixed z-50 transition-[background-color,box-shadow,backdrop-filter] duration-700 ease-in-out ${
+        isScrolled
+          ? 'bg-white/65 backdrop-blur-2xl shadow-[0_8px_40px_rgba(0,0,0,0.10)] border border-white/50'
+          : 'bg-white/95 backdrop-blur-sm shadow-none border-b border-gray-100'
+      }`}
+      style={{ position: 'fixed' }}
+    >
+      <div className={`transition-all duration-700 ease-in-out ${isScrolled ? 'px-6' : 'container-custom'}`}>
+        <div className={`flex items-center transition-all duration-700 ease-in-out ${
+          isScrolled ? 'h-11 gap-3 justify-center' : 'justify-between h-20'
+        }`}>
+          {/* Logo — always visible, shrinks to icon in pill */}
+          <Link to="/" className="flex items-center flex-shrink-0">
+            <motion.img
+              animate={{
+                height: isScrolled ? 28 : 48,
+                width: isScrolled ? 28 : 'auto',
+                borderRadius: isScrolled ? 14 : 4,
+              }}
+              transition={{ type: 'spring', stiffness: 200, damping: 25 }}
               src="https://raw.githubusercontent.com/Shyamanth-3/VVR_Rice_Assets/155fa334390dba2a96f8c184719c9916b9def6aa/VVR%20New%20Logo.jpg"
               alt="VVR Rice (India)"
-              className="h-12 w-auto"
+              className="object-cover"
             />
-            <div className="flex flex-col">
-              <span className="text-xl font-serif font-bold text-gray-900">
+            <motion.div
+              animate={{
+                width: isScrolled ? 0 : 'auto',
+                opacity: isScrolled ? 0 : 1,
+                marginLeft: isScrolled ? 0 : 8,
+              }}
+              transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+              className="overflow-hidden flex flex-col whitespace-nowrap"
+            >
+              <span className="text-xl font-serif font-bold text-gray-900 leading-tight">
                 VVR Rice
               </span>
-              <span className="text-xs text-gold-600 font-medium">
+              <span className="text-xs font-medium text-gold-600">
                 (INDIA)
               </span>
-            </div>
+            </motion.div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
+          {/* Desktop Navigation — always visible, centered when scrolled */}
+          <nav className={`hidden lg:flex items-center transition-all duration-700 ease-in-out ${
+            isScrolled ? 'space-x-5' : 'space-x-8'
+          }`}>
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`text-sm font-medium transition-colors duration-200 hover:text-gold-600 ${
+                className={`font-medium transition-all duration-300 hover:text-gold-600 whitespace-nowrap ${
+                  isScrolled ? 'text-[13px]' : 'text-sm'
+                } ${
                   location.pathname === item.href
-                    ? 'text-gold-600 border-b-2 border-gold-600 pb-1'
+                    ? 'text-gold-600'
                     : 'text-gray-700'
                 }`}
               >
-                {item.name}
+                <span className="relative">
+                  {item.name}
+                  {location.pathname === item.href && (
+                    <motion.span
+                      layoutId="nav-underline"
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gold-600 rounded-full"
+                      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                    />
+                  )}
+                </span>
               </Link>
             ))}
           </nav>
 
-          {/* CTA Button */}
-          <div className="hidden lg:flex">
-            <Link
-              to="/contact"
-              className="btn-primary"
-            >
-              Get In Touch
-            </Link>
-          </div>
+          {/* CTA Button — only visible when NOT scrolled */}
+          <AnimatePresence>
+            {!isScrolled && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8, width: 0 }}
+                animate={{ opacity: 1, scale: 1, width: 'auto' }}
+                exit={{ opacity: 0, scale: 0.8, width: 0 }}
+                transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                className="hidden lg:block overflow-hidden flex-shrink-0"
+              >
+                <Link
+                  to="/contact"
+                  className="btn-primary"
+                >
+                  Get In Touch
+                </Link>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 rounded-md text-gray-700 hover:text-gold-600 hover:bg-gray-100 transition-colors"
+            className={`lg:hidden p-2 rounded-full text-gray-700 hover:text-gold-600 hover:bg-gray-100/80 transition-colors ${
+              isScrolled ? 'ml-auto' : ''
+            }`}
           >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
 
         {/* Mobile Navigation */}
-        <motion.div
-          initial={false}
-          animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
-          transition={{ duration: 0.3 }}
-          className="lg:hidden overflow-hidden bg-white border-t"
-        >
-          <nav className="py-4 space-y-2">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                onClick={() => setIsOpen(false)}
-                className={`block px-4 py-2 text-sm font-medium transition-colors duration-200 hover:text-gold-600 hover:bg-beige-50 ${
-                  location.pathname === item.href
-                    ? 'text-gold-600 bg-beige-50'
-                    : 'text-gray-700'
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
-            <div className="px-4 pt-2">
-              <Link
-                to="/contact"
-                onClick={() => setIsOpen(false)}
-                className="btn-primary w-full text-center"
-              >
-                Get In Touch
-              </Link>
-            </div>
-          </nav>
-        </motion.div>
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className={`lg:hidden overflow-hidden ${isScrolled ? 'rounded-2xl mt-2 mb-2' : 'border-t'}`}
+            >
+              <nav className="py-3 space-y-1">
+                {navigation.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className={`block px-4 py-2 text-sm font-medium transition-colors duration-200 hover:text-gold-600 hover:bg-beige-50/80 rounded-lg mx-2 ${
+                      location.pathname === item.href
+                        ? 'text-gold-600 bg-beige-50'
+                        : 'text-gray-700'
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+                <div className="px-4 pt-2">
+                  <Link
+                    to="/contact"
+                    onClick={() => setIsOpen(false)}
+                    className="btn-primary w-full text-center block"
+                  >
+                    Get In Touch
+                  </Link>
+                </div>
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </header>
+    </motion.header>
   );
 };
 

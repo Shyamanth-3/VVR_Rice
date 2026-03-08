@@ -1,10 +1,31 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Award, Factory, Shield, Globe, ArrowRight, Star, Users, Clock } from 'lucide-react';
+import { motion, useScroll, useTransform, animate, useInView, useMotionValue, useSpring } from 'framer-motion';
+import { Award, Factory, Shield, Globe, ArrowRight, Star, Users, Clock, ChevronDown } from 'lucide-react';
 import Layout from '../components/Layout';
 
+import Counter from '../components/Counter';
+
 const Home = () => {
+  // Mouse tracking for parallax
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  
+  const springConfig = { damping: 25, stiffness: 150 };
+  const smoothMouseX = useSpring(mouseX, springConfig);
+  const smoothMouseY = useSpring(mouseY, springConfig);
+
+  const bgX = useTransform(smoothMouseX, [-1, 1], ["-3%", "3%"]);
+  const bgY = useTransform(smoothMouseY, [-1, 1], ["-3%", "3%"]);
+
+  const handleMouseMove = (e) => {
+    const { clientX, clientY } = e;
+    const x = (clientX / window.innerWidth - 0.5) * 2;
+    const y = (clientY / window.innerHeight - 0.5) * 2;
+    mouseX.set(x);
+    mouseY.set(y);
+  };
+
   const highlights = [
     {
       icon: <Clock className="w-12 h-12 text-gold-600" />,
@@ -81,20 +102,59 @@ const Home = () => {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-beige">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-rice-grain opacity-30"></div>
-        
-        {/* Background Image Overlay */}
-        <div className="absolute inset-0 bg-black/20"></div>
-        
-        {/* Hero Image */}
-        <div className="absolute inset-0">
+      <section 
+        className="relative min-h-[95vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-gray-900 via-gray-800 to-beige-900"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={() => { mouseX.set(0); mouseY.set(0); }}
+      >
+        {/* Animated Background Image slightly scaled to allow parallax */}
+        <motion.div 
+          initial={{ scale: 1.2 }}
+          animate={{ scale: 1.1 }}
+          transition={{ duration: 15, ease: "easeOut" }}
+          style={{ x: bgX, y: bgY }}
+          className="absolute inset-0 w-[110%] h-[110%] -left-[5%] -top-[5%]"
+        >
           <img
-            src="/src/assets/hero-rice-mill.jpg"
-            alt="VVR Rice Mill"
-            className="w-full h-full object-cover"
+            src="https://images.unsplash.com/photo-1595981267035-7b04d84b4f1c?auto=format&fit=crop&q=80&w=2070"
+            alt="Grains Background"
+            className="w-full h-full object-cover opacity-50 mix-blend-overlay"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/95 via-gray-900/60 to-transparent"></div>
+        </motion.div>
+        
+        {/* Floating Particles/Elements with Parallax Depth */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(20)].map((_, i) => {
+            // Unique factors for 3D depth effect
+            const factorX = (Math.random() * 2 + 1);
+            const factorY = (Math.random() * 2 + 1);
+            
+            return (
+              <motion.div
+                key={i}
+                className="absolute w-1 h-1 rounded-full bg-gold-400/60 blur-[1px]"
+                style={{ 
+                  x: useTransform(smoothMouseX, [-1, 1], [`${factorX * 15}px`, `-${factorX * 15}px`]),
+                  y: useTransform(smoothMouseY, [-1, 1], [`${factorY * 15}px`, `-${factorY * 15}px`])
+                }}
+                initial={{
+                  left: Math.random() * 100 + "vw",
+                  top: Math.random() * 100 + "vh",
+                  scale: Math.random() * 0.5 + 0.5,
+                }}
+                animate={{
+                  top: [null, Math.random() * -50 - 20 + "vh"],
+                  left: [null, `calc(${Math.random() * 20 - 10}vw)`],
+                }}
+                transition={{
+                  duration: Math.random() * 10 + 10,
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+              />
+            );
+          })}
         </div>
 
         {/* Hero Content */}
@@ -192,15 +252,17 @@ const Home = () => {
               <motion.div
                 key={index}
                 variants={itemVariants}
-                className="card p-8 text-center hover:bg-beige-50 transition-colors duration-300"
+                whileHover={{ y: -10, scale: 1.02 }}
+                className="card p-8 text-center hover:bg-white hover:shadow-2xl hover:shadow-gold-100/50 transition-all duration-300 border border-transparent hover:border-gold-100 relative overflow-hidden group"
               >
-                <div className="mb-6 flex justify-center">
+                <div className="absolute inset-0 bg-gradient-to-b from-gold-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="mb-6 flex justify-center transform group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 relative z-10">
                   {highlight.icon}
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                <h3 className="text-xl font-semibold text-gray-900 mb-4 relative z-10 group-hover:text-gold-700 transition-colors">
                   {highlight.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-600 leading-relaxed relative z-10">
                   {highlight.description}
                 </p>
               </motion.div>
@@ -239,21 +301,28 @@ const Home = () => {
               <motion.div
                 key={product.id}
                 variants={itemVariants}
-                className="card overflow-hidden group"
+                whileHover={{ y: -15 }}
+                className="card overflow-hidden group bg-white shadow-lg hover:shadow-2xl transition-all duration-300"
               >
-                <div className="aspect-w-16 aspect-h-12 bg-beige-100">
-                  <img
+                <div className="aspect-w-16 aspect-h-12 bg-beige-100 overflow-hidden relative">
+                  <motion.img
+                    whileHover={{ scale: 1.15 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
                     src={product.image}
                     alt={product.name}
-                    className="w-full h-100 object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-full object-cover"
                     onError={(e) => {
-                      e.target.src = '/src/assets/placeholder-rice.jpg';
+                      e.target.src = 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1000';
                     }}
                   />
+                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300"></div>
                 </div>
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold text-gold-600 bg-gold-100 px-2 py-1 rounded">
+                <div className="p-6 relative">
+                  {/* Decorative line */}
+                  <div className="absolute top-0 left-6 right-6 h-1 bg-gradient-to-r from-gold-400 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                  
+                  <div className="flex items-center justify-between mb-3 mt-1">
+                    <span className="text-xs font-bold text-gold-700 bg-gold-50 border border-gold-200 px-2.5 py-1 rounded-full uppercase tracking-wide">
                       {product.tagline}
                     </span>
                     <div className="flex items-center">
@@ -262,18 +331,24 @@ const Home = () => {
                       ))}
                     </div>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-gold-700 transition-colors">
                     {product.name}
                   </h3>
-                  <p className="text-gray-600 text-sm mb-4">
+                  <p className="text-gray-600 text-sm mb-5 leading-relaxed">
                     {product.description}
                   </p>
                   <Link
                     to={`/products#${product.id}`}
-                    className="inline-flex items-center text-gold-600 hover:text-gold-700 font-medium text-sm"
+                    className="inline-flex items-center text-gold-600 hover:text-gold-800 font-bold text-sm tracking-wide group/link"
                   >
-                    Learn More
-                    <ArrowRight size={16} className="ml-1" />
+                    DISCOVER MORE
+                    <motion.div
+                      className="ml-2"
+                      initial={{ x: 0 }}
+                      whileHover={{ x: 5 }}
+                    >
+                      <ArrowRight size={16} />
+                    </motion.div>
                   </Link>
                 </div>
               </motion.div>
@@ -321,29 +396,44 @@ const Home = () => {
               </p>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Users className="w-8 h-8 text-gold-600" />
+                <motion.div 
+                  whileHover={{ scale: 1.05 }}
+                  className="text-center p-6 rounded-2xl bg-beige-50 hover:bg-white hover:shadow-xl transition-all duration-300 border border-transparent hover:border-gold-100"
+                >
+                  <div className="w-20 h-20 bg-gold-100/50 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:rotate-12 transition-transform">
+                    <Users className="w-10 h-10 text-gold-600" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">10,000+</h3>
-                  <p className="text-gray-600">Satisfied Families</p>
-                </div>
+                  <h3 className="text-4xl font-bold text-gray-900 mb-2 font-serif">
+                    <Counter from={0} to={10000} suffix="+" />
+                  </h3>
+                  <p className="text-gray-600 font-medium tracking-wide uppercase text-sm">Satisfied Families</p>
+                </motion.div>
                 
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Factory className="w-8 h-8 text-gold-600" />
+                <motion.div 
+                  whileHover={{ scale: 1.05 }}
+                  className="text-center p-6 rounded-2xl bg-beige-50 hover:bg-white hover:shadow-xl transition-all duration-300 border border-transparent hover:border-gold-100"
+                >
+                  <div className="w-20 h-20 bg-gold-100/50 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:rotate-12 transition-transform">
+                    <Factory className="w-10 h-10 text-gold-600" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">100%</h3>
-                  <p className="text-gray-600">Quality Assured</p>
-                </div>
+                  <h3 className="text-4xl font-bold text-gray-900 mb-2 font-serif">
+                    <Counter from={0} to={100} suffix="%" />
+                  </h3>
+                  <p className="text-gray-600 font-medium tracking-wide uppercase text-sm">Quality Assured</p>
+                </motion.div>
                 
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Clock className="w-8 h-8 text-gold-600" />
+                <motion.div 
+                  whileHover={{ scale: 1.05 }}
+                  className="text-center p-6 rounded-2xl bg-beige-50 hover:bg-white hover:shadow-xl transition-all duration-300 border border-transparent hover:border-gold-100"
+                >
+                  <div className="w-20 h-20 bg-gold-100/50 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:rotate-12 transition-transform">
+                    <Clock className="w-10 h-10 text-gold-600" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">60+</h3>
-                  <p className="text-gray-600">Years of Legacy</p>
-                </div>
+                  <h3 className="text-4xl font-bold text-gray-900 mb-2 font-serif">
+                    <Counter from={0} to={60} suffix="+" />
+                  </h3>
+                  <p className="text-gray-600 font-medium tracking-wide uppercase text-sm">Years of Legacy</p>
+                </motion.div>
               </div>
             </div>
           </motion.div>

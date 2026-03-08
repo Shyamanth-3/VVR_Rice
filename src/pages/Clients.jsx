@@ -1,9 +1,30 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef, useState } from 'react';
+import { motion, useAnimationFrame } from 'framer-motion';
 import { Star, Quote, MapPin, Users, TrendingUp, Award } from 'lucide-react';
 import Layout from '../components/Layout';
+import Counter from '../components/Counter';
+import backgroundImage from '../assets/background.png';
 
 const Clients = () => {
+  const marqueeRef = useRef(null);
+  const x = useRef(0);
+  const [isMarqueeHovered, setIsMarqueeHovered] = useState(false);
+
+  // Smoothly scroll and slow down exactly as requested
+  useAnimationFrame((time, delta) => {
+    if (!marqueeRef.current) return;
+    const speed = isMarqueeHovered ? 0.2 : 1.2;
+    const moveBy = -1 * speed * (delta / 16);
+    x.current += moveBy;
+    
+    // Exact width of one set of logos (10 logos * (256px width + 24px gap) = 2800px)
+    if (x.current <= -2800) {
+      x.current += 2800;
+    }
+    
+    marqueeRef.current.style.transform = `translateX(${x.current}px)`;
+  });
+
   // Actual VVR Rice clients 
   const clientLogos = [
     { name: 'TTD', logo: 'https://raw.githubusercontent.com/Shyamanth-3/VVR_Rice_Assets/7c0c4daddb9fe0092432d2b985b26d340c838071/ttd-logo.png', description: 'Tirumala Tirupati Devasthanams ' },
@@ -16,36 +37,6 @@ const Clients = () => {
     { name: 'KL University', logo: 'https://raw.githubusercontent.com/Shyamanth-3/VVR_Rice_Assets/7c0c4daddb9fe0092432d2b985b26d340c838071/KL_University_logo.svg.jpg', description: 'Koneru Lakshmaiah Education Foundation' },
     { name: 'Mulpuri Group', logo: 'https://raw.githubusercontent.com/Shyamanth-3/VVR_Rice_Assets/155fa334390dba2a96f8c184719c9916b9def6aa/mulpuri-logo.png', description: 'Business conglomerate' },
     { name: 'BSR Infratech', logo: 'https://raw.githubusercontent.com/Shyamanth-3/VVR_Rice_Assets/7c0c4daddb9fe0092432d2b985b26d340c838071/bsr-logo.png', description: 'Infrastructure development company' },
-  ];
-
-  const testimonials = [
-    {
-      id: 1,
-      name: 'Rajesh Kumar',
-      role: 'Procurement Manager',
-      company: 'Regional Supermarket Chain',
-      rating: 5,
-      content: 'VVR Rice has been our trusted supplier for over 5 years. Their consistent quality and reliable delivery schedules have made them an invaluable partner. The Sona Masoori variety is particularly popular among our customers.',
-      location: 'Hyderabad',
-    },
-    {
-      id: 2,
-      name: 'Priya Sharma',
-      role: 'Store Manager',
-      company: 'Premium Grocery Store',
-      rating: 5,
-      content: 'The quality of VVR Rice products is exceptional. We\'ve received numerous positive feedback from customers, especially for their FRK fortified rice. The packaging is also very professional and appealing.',
-      location: 'Vijayawada',
-    },
-    {
-      id: 3,
-      name: 'Anil Reddy',
-      role: 'Business Owner',
-      company: 'Wholesale Rice Distributor',
-      rating: 5,
-      content: 'Working with VVR Rice has been a pleasure. Their automated processing ensures consistent quality, and their customer service is outstanding. We\'ve built a strong business relationship over the years.',
-      location: 'Guntur',
-    },
   ];
 
   const stats = [
@@ -97,20 +88,35 @@ const Clients = () => {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="relative py-32 bg-gradient-beige overflow-hidden">
-        <div className="absolute inset-0 bg-rice-grain opacity-20"></div>
+      <section className="relative py-32 bg-gray-900 overflow-hidden flex items-center justify-center min-h-[50vh]">
+        <motion.div 
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 15, ease: "easeOut" }}
+          className="absolute inset-0"
+        >
+          <motion.img
+            initial={{ opacity: 0.3, filter: 'blur(8px)' }}
+            animate={{ opacity: 0.75, filter: 'blur(0px)' }}
+            transition={{ duration: 2.5, ease: "easeOut", delay: 0.2 }}
+            src={backgroundImage}
+            alt="Partnership Background"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-gray-900/30"></div>
+        </motion.div>
         
         <div className="container-custom relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center max-w-4xl mx-auto"
+            className="text-center max-w-4xl mx-auto text-white"
           >
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold text-gray-900 mb-6">
-              Our Valued <span className="text-gradient">Partners</span>
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold mb-6">
+              Our Valued <span className="text-gold-400">Partners</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 leading-relaxed">
+            <p className="text-xl md:text-2xl text-gray-300 leading-relaxed font-light">
               Trusted by families, retailers, and institutions across Andhra Pradesh 
               and Telangana for over six decades.
             </p>
@@ -118,28 +124,49 @@ const Clients = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="section-padding bg-white">
-        <div className="container-custom">
+      {/* Stats Section - Floating Innovative Layout */}
+      <section className="relative z-20 -mt-16 sm:-mt-20 pb-12 px-4">
+        <div className="container-custom max-w-5xl">
           <motion.div
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+            className="grid grid-cols-2 lg:flex lg:flex-row bg-white/80 backdrop-blur-xl shadow-2xl rounded-[1.5rem] lg:rounded-[2rem] border border-white/60 overflow-hidden"
           >
             {stats.map((stat, index) => (
               <motion.div
                 key={index}
                 variants={itemVariants}
-                className="text-center"
+                className={`relative w-full lg:flex-1 p-4 sm:p-5 lg:p-6 flex flex-col items-center justify-start group cursor-default transition-colors duration-500 hover:bg-white/95
+                  ${index === 0 ? 'border-b border-r border-gray-200/60 lg:border-b-0' : ''}
+                  ${index === 1 ? 'border-b border-gray-200/60 lg:border-b-0 lg:border-r' : ''}
+                  ${index === 2 ? 'border-r border-gray-200/60' : ''}
+                `}
               >
-                <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  {stat.icon}
+                {/* Subtle Hover Glow Background */}
+                <div className="absolute inset-0 bg-gold-400/0 group-hover:bg-gold-400/5 transition-colors duration-500 pointer-events-none"></div>
+                
+                <div className="w-10 h-10 sm:w-11 sm:h-11 lg:w-12 lg:h-12 rounded-full bg-gradient-to-br from-beige-100 to-white flex items-center justify-center mb-2 sm:mb-3 lg:mb-4 shadow-sm border border-gold-100/50 group-hover:scale-110 group-hover:shadow-md transition-all duration-500 z-10">
+                  {React.cloneElement(stat.icon, { className: "w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-gold-600" })}
                 </div>
-                <div className="text-3xl font-bold text-gray-900 mb-2">{stat.number}</div>
-                <div className="text-lg font-semibold text-gray-700 mb-2">{stat.label}</div>
-                <p className="text-gray-600 text-sm">{stat.description}</p>
+                
+                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 font-serif mb-1 tracking-tight z-10">
+                  <Counter from={0} to={parseInt(stat.number)} suffix={stat.number.replace(/[0-9]/g, '')} duration={2} />
+                </div>
+                
+                <div className="text-[10px] sm:text-xs lg:text-sm font-bold text-gold-600 uppercase tracking-[0.1em] sm:tracking-[0.15em] text-center mb-0 group-hover:mb-2 transition-all duration-500 z-10 leading-tight">
+                  {stat.label}
+                </div>
+                
+                {/* Expandable Innovator Description */}
+                <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 z-10 w-full">
+                  <div className="overflow-hidden">
+                    <p className="text-gray-500 text-[10px] sm:text-xs lg:text-sm text-center pt-2 px-1 sm:px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 leading-snug">
+                      {stat.description}
+                    </p>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -165,139 +192,104 @@ const Clients = () => {
             </p>
           </motion.div>
 
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8"
-          >
-            {clientLogos.map((client, index) => (
-              <motion.div
-                key={index}
-                variants={itemVariants}
-                className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col items-center justify-center"
-              >
-                <div className="w-full h-20 flex items-center justify-center mb-3">
-                  {client.logo ? (
-                    <img
-                      src={client.logo}
-                      alt={client.name}
-                      className="max-w-full max-h-full object-contain"
-                    />
-                  ) : (
-                    /* Placeholder for client logos */
-                    <div className="w-full h-16 bg-gradient-to-br from-gold-100 to-beige-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gold-300">
-                      <span className="text-gold-600 font-medium text-xs">LOGO</span>
-                    </div>
-                  )}
+          {/* Infinite Scroll Logo Marquee */}
+          <div className="relative overflow-hidden w-full py-10 mt-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+            <style>{`
+              .text-scroller {
+                display: inline-block;
+                white-space: nowrap;
+              }
+              .group\\/card:hover .text-scroller {
+                animation: scrollText 4s ease-in-out infinite alternate;
+              }
+              @keyframes scrollText {
+                0%, 15% { transform: translateX(0); }
+                85%, 100% { transform: translateX(calc(224px - 100%)); }
+              }
+            `}</style>
+            <div 
+              ref={marqueeRef}
+              className="flex items-center gap-6 w-max"
+            >
+              {/* Duplicate the array to create a seamless infinite loop */}
+              {[...clientLogos, ...clientLogos].map((client, index) => (
+                <div
+                  key={index}
+                  onMouseEnter={() => setIsMarqueeHovered(true)}
+                  onMouseLeave={() => setIsMarqueeHovered(false)}
+                  className="relative w-64 h-40 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:border-gold-300 hover:shadow-2xl transition-all duration-300 flex flex-col items-center justify-center flex-shrink-0 cursor-pointer overflow-hidden group/card"
+                >
+                  <div className="w-full h-24 flex items-center justify-center mb-0 group-hover/card:-translate-y-3 transition-transform duration-500">
+                    {client.logo ? (
+                      <img
+                        src={client.logo}
+                        alt={client.name}
+                        className="max-w-full max-h-full object-contain grayscale opacity-60 group-hover/card:grayscale-0 group-hover/card:opacity-100 transition-all duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-16 bg-gradient-to-br from-gold-100 to-beige-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gold-300 grayscale opacity-60 group-hover/card:grayscale-0 group-hover/card:opacity-100 transition-all duration-500">
+                        <span className="text-gold-600 font-medium text-xs">LOGO</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="absolute inset-x-0 bottom-4 px-4 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 pointer-events-none overflow-hidden">
+                    {client.name.length > 22 ? (
+                      <div className="w-full text-left">
+                        <span className="text-sm font-bold text-gold-700 text-scroller">
+                          {client.name}
+                        </span>
+                      </div>
+                    ) : (
+                      <h3 className="text-sm font-bold text-gold-700 text-center">
+                        {client.name}
+                      </h3>
+                    )}
+                  </div>
                 </div>
-                <div className="text-center">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-1 leading-tight">
-                    {client.name}
-                  </h3>
-                  {client.description && (
-                    <p className="text-xs text-gray-600 leading-tight">
-                      {client.description}
-                    </p>
-                  )}
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+              ))}
+            </div>
+          </div>
 
-          {/* Trust Message */}
+          {/* Trust Message - Elegant Typographic Style */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 1, delay: 0.2 }}
             viewport={{ once: true }}
-            className="text-center mt-16"
+            className="relative mt-8 py-6"
           >
-            <div className="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
-              <h3 className="text-2xl font-serif font-bold text-gray-900 mb-4">
-                "Trusted by families, retailers, and institutions across 
-                Andhra Pradesh and Telangana."
-              </h3>
-              <p className="text-gray-600">
+            {/* Decorative golden divider line */}
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="h-px w-16 bg-gradient-to-r from-transparent to-gold-400/60"></div>
+              <div className="w-2 h-2 rounded-full bg-gold-400/80"></div>
+              <div className="h-px w-16 bg-gradient-to-l from-transparent to-gold-400/60"></div>
+            </div>
+            
+            {/* Oversized decorative quote mark */}
+            <div className="absolute top-8 left-1/2 -translate-x-1/2 text-[10rem] leading-none font-serif text-gold-300/15 pointer-events-none select-none" aria-hidden="true">
+              &ldquo;
+            </div>
+
+            <div className="relative z-10 max-w-3xl mx-auto text-center px-4">
+              <p className="text-2xl md:text-3xl lg:text-4xl font-serif text-gray-800 leading-snug mb-8 italic">
+                Trusted by families, retailers, and institutions across{' '}
+                <span className="text-gold-600 font-bold not-italic">Andhra Pradesh</span>{' '}
+                and{' '}
+                <span className="text-gold-600 font-bold not-italic">Telangana</span>.
+              </p>
+              <p className="text-gray-500 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
                 Our commitment to quality and consistency has earned us the trust 
                 of major retail chains, local stores, and countless families who 
                 choose VVR Rice for their daily needs.
               </p>
             </div>
-          </motion.div>
-        </div>
-      </section>
 
-      {/* Testimonials Section */}
-      <section className="section-padding bg-white">
-        <div className="container-custom">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-gray-900 mb-4">
-              What Our <span className="text-gradient">Partners Say</span>
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Hear from our valued partners about their experience working with VVR Rice 
-              and why they continue to trust us for their rice supply needs.
-            </p>
-          </motion.div>
-
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            className="grid grid-cols-1 lg:grid-cols-3 gap-8"
-          >
-            {testimonials.map((testimonial) => (
-              <motion.div
-                key={testimonial.id}
-                variants={itemVariants}
-                className="card p-8 h-full"
-              >
-                {/* Quote Icon */}
-                <div className="flex justify-center mb-6">
-                  <div className="w-12 h-12 bg-gold-100 rounded-full flex items-center justify-center">
-                    <Quote className="w-6 h-6 text-gold-600" />
-                  </div>
-                </div>
-
-                {/* Rating */}
-                <div className="flex justify-center mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} size={18} className="text-gold-400 fill-current" />
-                  ))}
-                </div>
-
-                {/* Content */}
-                <blockquote className="text-gray-600 mb-6 leading-relaxed text-center italic">
-                  "{testimonial.content}"
-                </blockquote>
-
-                {/* Author */}
-                <div className="text-center border-t pt-6">
-                  <div className="font-semibold text-gray-900 mb-1">
-                    {testimonial.name}
-                  </div>
-                  <div className="text-sm text-gold-600 mb-1">
-                    {testimonial.role}
-                  </div>
-                  <div className="text-sm text-gray-600 mb-2">
-                    {testimonial.company}
-                  </div>
-                  <div className="flex items-center justify-center text-xs text-gray-500">
-                    <MapPin size={12} className="mr-1" />
-                    {testimonial.location}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+            {/* Bottom decorative divider */}
+            <div className="flex items-center justify-center gap-4 mt-10">
+              <div className="h-px w-16 bg-gradient-to-r from-transparent to-gold-400/60"></div>
+              <div className="w-2 h-2 rounded-full bg-gold-400/80"></div>
+              <div className="h-px w-16 bg-gradient-to-l from-transparent to-gold-400/60"></div>
+            </div>
           </motion.div>
         </div>
       </section>
