@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'fram
 import { Factory, Award, Users, Target, Heart, Leaf, CheckCircle } from 'lucide-react';
 import Layout from '../components/Layout';
 import Counter from '../components/Counter';
+import heritageImage from '../assets/svd-0354-about.jpg';
 
 const About = () => {
   const timelineEvents = [
@@ -142,12 +143,9 @@ const About = () => {
                 <motion.img
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 1.5, ease: "easeOut" }}
-                  src="/src/assets/about-heritage.jpg"
+                  src={heritageImage}
                   alt="VVR Rice Heritage"
                   className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.target.src = 'https://images.unsplash.com/photo-1595981267035-7b04d84b4f1c?auto=format&fit=crop&q=80&w=1000';
-                  }}
                 />
                 {/* Subtle rich overlay */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-gold-900/20 to-transparent mix-blend-multiply pointer-events-none"></div>
