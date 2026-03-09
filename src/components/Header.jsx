@@ -6,7 +6,15 @@ import { Menu, X } from 'lucide-react';
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile(); // Initial check
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const navigation = [
     { name: 'Home', href: '/' },
@@ -33,49 +41,48 @@ const Header = () => {
     <motion.header
       initial={false}
       animate={{
-        top: isScrolled ? 14 : 0,
-        left: '50%',
-        x: '-50%',
-        width: isScrolled ? 'auto' : '100%',
-        borderRadius: isScrolled ? 9999 : 0,
-        paddingTop: isScrolled ? 0 : 0,
-        paddingBottom: isScrolled ? 0 : 0,
+        top: isScrolled && !isMobile ? 20 : 0,
+        left: isMobile ? 0 : '50%',
+        x: isMobile ? 0 : '-50%',
+        width: isScrolled && !isMobile ? 'max-content' : '100%',
+        borderRadius: isScrolled && !isMobile ? 9999 : 0,
+        paddingTop: 0,
+        paddingBottom: 0,
       }}
       transition={{
         type: 'spring',
-        stiffness: 180,
-        damping: 24,
-        mass: 0.6,
+        stiffness: 200,
+        damping: 25,
+        mass: 0.5,
       }}
-      className={`fixed z-50 transition-[background-color,box-shadow,backdrop-filter] duration-700 ease-in-out ${
+      className={`fixed z-50 transition-[background-color,box-shadow,backdrop-filter] duration-700 ease-in-out w-full ${
         isScrolled
-          ? 'bg-white/65 backdrop-blur-2xl shadow-[0_8px_40px_rgba(0,0,0,0.10)] border border-white/50'
+          ? 'bg-white/70 backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] border-b lg:border border-white/50'
           : 'bg-white/95 backdrop-blur-sm shadow-none border-b border-gray-100'
       }`}
       style={{ position: 'fixed' }}
     >
-      <div className={`transition-all duration-700 ease-in-out ${isScrolled ? 'px-6' : 'container-custom'}`}>
-        <div className={`flex items-center transition-all duration-700 ease-in-out ${
-          isScrolled ? 'h-11 gap-3 justify-center' : 'justify-between h-20'
+      <div className={`transition-all duration-700 ease-in-out ${(isScrolled && !isMobile) ? 'px-8' : 'container-custom'}`}>
+        <motion.div layout className={`flex items-center w-full justify-between transition-all duration-700 ease-in-out ${
+          (isScrolled && !isMobile) ? 'h-14 gap-8' : 'h-16 md:h-20 gap-4'
         }`}>
           {/* Logo — always visible, shrinks to icon in pill */}
           <Link to="/" className="flex items-center flex-shrink-0">
             <motion.img
               animate={{
-                height: isScrolled ? 28 : 48,
-                width: isScrolled ? 28 : 'auto',
-                borderRadius: isScrolled ? 14 : 4,
+                height: isScrolled ? 36 : 56,
+                width: isScrolled ? 36 : 'auto',
               }}
               transition={{ type: 'spring', stiffness: 200, damping: 25 }}
-              src="https://raw.githubusercontent.com/Shyamanth-3/VVR_Rice_Assets/155fa334390dba2a96f8c184719c9916b9def6aa/VVR%20New%20Logo.jpg"
+              src="/logo.png"
               alt="VVR Rice (India)"
-              className="object-cover"
+              className="object-contain"
             />
             <motion.div
               animate={{
-                width: isScrolled ? 0 : 'auto',
-                opacity: isScrolled ? 0 : 1,
-                marginLeft: isScrolled ? 0 : 8,
+                width: (isScrolled && !isMobile) ? 0 : 'auto',
+                opacity: (isScrolled && !isMobile) ? 0 : 1,
+                marginLeft: (isScrolled && !isMobile) ? 0 : 8,
               }}
               transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
               className="overflow-hidden flex flex-col whitespace-nowrap"
@@ -143,12 +150,12 @@ const Header = () => {
           <button
             onClick={() => setIsOpen(!isOpen)}
             className={`lg:hidden p-2 rounded-full text-gray-700 hover:text-gold-600 hover:bg-gray-100/80 transition-colors ${
-              isScrolled ? 'ml-auto' : ''
+              (isScrolled && !isMobile) ? 'ml-auto' : ''
             }`}
           >
             {isOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
-        </div>
+        </motion.div>
 
         {/* Mobile Navigation */}
         <AnimatePresence>

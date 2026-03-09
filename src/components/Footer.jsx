@@ -29,9 +29,9 @@ const Footer = () => {
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
               <img
-                src="https://raw.githubusercontent.com/Shyamanth-3/VVR_Rice_Assets/7c0c4daddb9fe0092432d2b985b26d340c838071/Logo.png"
+                src="/logo.png"
                 alt="VVR Rice (India)"
-                className="h-10 w-auto brightness-100 "
+                className="h-12 w-auto brightness-100 object-contain"
               />
               <div className="flex flex-col">
                 <span className="text-lg font-serif font-bold">VVR Rice</span>
