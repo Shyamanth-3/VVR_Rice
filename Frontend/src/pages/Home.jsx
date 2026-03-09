@@ -5,6 +5,7 @@ import { Award, Factory, Shield, Globe, ArrowRight, Star, Users, Clock, ChevronD
 import Layout from '../components/Layout';
 
 import Counter from '../components/Counter';
+import { TubesBackground } from '../components/TubesBackground';
 
 const Home = () => {
   // Mouse tracking for parallax
@@ -103,62 +104,13 @@ const Home = () => {
     <Layout>
       {/* Hero Section */}
       <section 
-        className="relative min-h-[95vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-gray-900 via-gray-800 to-beige-900"
-        onMouseMove={handleMouseMove}
-        onMouseLeave={() => { mouseX.set(0); mouseY.set(0); }}
+        className="relative h-screen min-h-[600px] w-full flex items-center justify-center overflow-hidden bg-gray-900"
       >
-        {/* Animated Background Image slightly scaled to allow parallax */}
-        <motion.div 
-          initial={{ scale: 1.2 }}
-          animate={{ scale: 1.1 }}
-          transition={{ duration: 15, ease: "easeOut" }}
-          style={{ x: bgX, y: bgY }}
-          className="absolute inset-0 w-[110%] h-[110%] -left-[5%] -top-[5%]"
-        >
-          <img
-            src="https://images.unsplash.com/photo-1595981267035-7b04d84b4f1c?auto=format&fit=crop&q=80&w=2070"
-            alt="Grains Background"
-            className="w-full h-full object-cover opacity-50 mix-blend-overlay"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/95 via-gray-900/60 to-transparent"></div>
-        </motion.div>
+        <TubesBackground>
+          <div className="flex flex-col items-center justify-center w-full h-full text-white pt-20">
         
-        {/* Floating Particles/Elements with Parallax Depth */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[...Array(20)].map((_, i) => {
-            // Unique factors for 3D depth effect
-            const factorX = (Math.random() * 2 + 1);
-            const factorY = (Math.random() * 2 + 1);
-            
-            return (
-              <motion.div
-                key={i}
-                className="absolute w-1 h-1 rounded-full bg-gold-400/60 blur-[1px]"
-                style={{ 
-                  x: useTransform(smoothMouseX, [-1, 1], [`${factorX * 15}px`, `-${factorX * 15}px`]),
-                  y: useTransform(smoothMouseY, [-1, 1], [`${factorY * 15}px`, `-${factorY * 15}px`])
-                }}
-                initial={{
-                  left: Math.random() * 100 + "vw",
-                  top: Math.random() * 100 + "vh",
-                  scale: Math.random() * 0.5 + 0.5,
-                }}
-                animate={{
-                  top: [null, Math.random() * -50 - 20 + "vh"],
-                  left: [null, `calc(${Math.random() * 20 - 10}vw)`],
-                }}
-                transition={{
-                  duration: Math.random() * 10 + 10,
-                  repeat: Infinity,
-                  ease: "linear"
-                }}
-              />
-            );
-          })}
-        </div>
-
-        {/* Hero Content */}
-        <div className="relative z-10 container-custom text-center text-white">
+          {/* Hero Content */}
+          <div className="relative z-10 container-custom text-center px-4 w-full">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -179,30 +131,41 @@ const Home = () => {
               ensuring premium quality and hygiene standards.
             </motion.p>
             
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6"
-            >
-              <Link
-                to="/products"
-                className="btn-primary text-lg px-8 py-4 inline-flex items-center space-x-2"
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                className="flex flex-col sm:flex-row items-center justify-center space-y-6 sm:space-y-0 sm:space-x-12 mt-4"
               >
-                <span>Explore Our Products</span>
-                <ArrowRight size={20} />
-              </Link>
-              
-              <Link
-                to="/about"
-                className="btn-secondary text-lg px-8 py-4 bg-white/10 border-white text-white hover:bg-white hover:text-gray-900"
-              >
-                Our Heritage
-              </Link>
+                <Link
+                  to="/products"
+                  className="group relative inline-flex items-center text-lg font-serif italic text-white"
+                >
+                  <span className="relative z-10 mb-1">Explore Our Products</span>
+                  <motion.span 
+                    className="ml-3 relative z-10 text-gold-400 group-hover:translate-x-2 transition-transform duration-300"
+                  >
+                    <ArrowRight size={24} />
+                  </motion.span>
+                  {/* Fluid underline effect */}
+                  <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gold-400/30 group-hover:h-full group-hover:bg-gold-500/20 transition-all duration-300 rounded-lg -z-0 -inset-x-4 -inset-y-2"></span>
+                </Link>
+                
+                <Link
+                  to="/about"
+                  className="group relative inline-flex items-center text-lg font-serif italic text-white/80 hover:text-white transition-colors"
+                >
+                  <span className="relative z-10 mb-1">Discover Our Heritage</span>
+                  {/* Subtle glowing dot indicator */}
+                  <span className="absolute -left-4 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-white/30 group-hover:bg-gold-400 group-hover:shadow-[0_0_10px_rgba(247,197,86,0.8)] transition-all duration-300"></span>
+                  {/* Sleek bottom border fade */}
+                  <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-gradient-to-r from-white to-transparent group-hover:w-full transition-all duration-500"></span>
+                </Link>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        </div>
-
+          </div>
+          </div>
+        </TubesBackground>
         {/* Scroll Indicator */}
         <motion.div
           initial={{ opacity: 0 }}

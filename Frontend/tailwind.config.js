@@ -47,15 +47,19 @@ export default {
       fontFamily: {
         'serif': ['Playfair Display', 'Georgia', 'serif'],
         'sans': ['Inter', 'Helvetica', 'Arial', 'sans-serif'],
+        'display': ['"League Spartan"', 'sans-serif'],
       },
       backgroundImage: {
-        'rice-grain': "url('data:image/svg+xml,%3Csvg width=\"40\" height=\"40\" viewBox=\"0 0 40 40\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"%23f5f2ee\" fill-opacity=\"0.1\"%3E%3Cpath d=\"M20 20c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10zm10 0c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10z\"/%3E%3C/g%3E%3C/svg%3E')",
+        'rice-grain': "url('/grain.png')",
       },
       animation: {
         'fade-in-up': 'fadeInUp 0.8s ease-out',
         'fade-in': 'fadeIn 1s ease-out',
         'slide-in-left': 'slideInLeft 0.8s ease-out',
         'slide-in-right': 'slideInRight 0.8s ease-out',
+        'ken-burns': 'ken-burns 20s ease-out infinite alternate',
+        'spin-slow': 'spin 15s linear infinite',
+        'spin-slow-reverse': 'spin-reverse 15s linear infinite',
       },
       keyframes: {
         fadeInUp: {

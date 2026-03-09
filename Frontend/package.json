@@ -9,11 +9,17 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
+    "clsx": "^2.1.1",
     "framer-motion": "^11.3.28",
+    "gsap": "^3.14.2",
     "lucide-react": "^0.427.0",
+    "ogl": "^1.0.11",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.1"
+    "react-router-dom": "^6.26.1",
+    "tailwind-merge": "^3.5.0",
+    "three": "^0.183.2"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
