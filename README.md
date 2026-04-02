@@ -5,7 +5,7 @@
 
 > **VVR Rice (India)** — Bringing tradition and technology together since 1960. A premium rice mill with 60+ years of heritage, serving Andhra Pradesh and Telangana.
 
-**Official Website:** [vvr-rice.com](https://vvr-rice.com)
+**Official Website:** [vvrrice.com](https://vvr-rice.com)
 
 ---
 
